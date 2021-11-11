@@ -1,17 +1,25 @@
-    .org 0
-    NOP
-    NOP
-TU:
+; i8255
+PORTA = $00
+PORTB = $01
+PORTC = $02
+CONTROL_REGISTER = $03
 
-    jp start
+    .org $8000
+    ld a,$80
+    out (CONTROL_REGISTER),a
+    ld a, 0
 
-    .org 0x0101
-    .include 'lcd.s'
-
-start:
-    ld sp,0x8100
-    call lcd_init
 loop:
+    out (PORTA),a
+    inc a
+    call delay
     jp loop
 
+delay:
+    push af
+    ld de,50
+    ld c, $0A ; Delay $DE ms
+    rst $30
+    pop af
+    ret
 
